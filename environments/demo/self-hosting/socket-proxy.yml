@@ -1,0 +1,70 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.91.0/24
+
+services:
+  # https://github.com/Tecnativa/docker-socket-proxy
+  socket-proxy:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    container_name: socket-proxy
+    hostname: socket-proxy
+    image: tecnativa/docker-socket-proxy
+    privileged: true
+    ports:
+      - "127.0.0.1:2375:2375"
+    networks:
+      socket_proxy:
+        ipv4_address: 192.168.91.254
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      ## Granted by Default
+      - EVENTS=1
+      - PING=1
+      - VERSION=1
+      ## Revoked by Default
+      # Security critical
+      - AUTH=0
+      - SECRETS=0
+      - POST=1 # Watchtower
+      # Not always needed
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - CONTAINERS=1 # Traefik, portainer, etc.
+      - DISTRIBUTION=0
+      - EXEC=1 # Portainer (console access)
+      - IMAGES=1 # Portainer
+      - INFO=1 # Portainer
+      - NETWORKS=1 # Portainer
+      - NODES=0
+      - PLUGINS=0
+      - SERVICES=1 # Portainer
+      - SESSION=0
+      - SWARM=0
+      - SYSTEM=0
+      - TASKS=1 # Portainer
+      - VOLUMES=1 # Portainer
+    labels:
+      - homepage.group=Self Hosting
+      - homepage.name=Socket Proxy
+      - homepage.icon=docker.png
+      - homepage.description=$SOCKETPROXY_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

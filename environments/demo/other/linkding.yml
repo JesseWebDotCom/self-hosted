@@ -1,0 +1,35 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/sissbruecker/linkding
+  linkding:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks  
+    image: sissbruecker/linkding:latest
+    container_name: linkding
+    hostname: linkding
+    ports:
+      - "${LINKDING_HTTP_PORT:-9090}:9090"
+    volumes:
+      - ./data/linkding/data:/etc/linkding/data
+    environment:
+      - LD_SUPERUSER_NAME=${LINKDING_SUPERUSER_NAME}
+      - LD_SUPERUSER_PASSWORD=${LINKDING_SUPERUSER_PASSWORD}  
+    labels:
+      - homepage.group=Other
+      - homepage.name=LinkDing
+      - homepage.icon=linkding.png
+      - homepage.href=$LINKDING_HOMEPAGE_URL
+      - homepage.ping=$LINKDING_HOMEPAGE_PING
+      - homepage.description=$LINKDING_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

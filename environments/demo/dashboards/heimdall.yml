@@ -1,0 +1,33 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/linuxserver/Heimdall
+  # https://hub.docker.com/r/linuxserver/heimdall/
+  heimdall:
+    extends:
+      file: ../../common-services.yml
+      service: with_networks
+    image: linuxserver/heimdall:latest
+    container_name: heimdall
+    hostname: heimdall
+    ports:
+      - ${HEIMDALL_HTTP_PORT}:80
+    volumes:
+      - ./data/heimdall/config:/config:rw
+    labels:
+      - homepage.group=Dashboards
+      - homepage.name=Heimdall
+      - homepage.icon=heimdall.png
+      - homepage.href=$HEIMDALL_HOMEPAGE_URL
+      - homepage.ping=$HEIMDALL_HOMEPAGE_PING
+      - homepage.description=$HEIMDALL_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

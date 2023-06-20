@@ -1,0 +1,38 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/coder/code-server
+  code-server:
+    extends:
+      file: ../../common-services.yml
+      service: with_networks
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    hostname: code-server
+    privileged: false
+    ports:
+      - ${CODESERVER_HTTP_PORT}:8080
+      - ${CODESERVER_HTTPS_PORT}:8443
+    environment:
+      - SUDO_PASSWORD=${CODESERVER_PASSWORD}
+      - DEFAULT_WORKSPACE=/docker
+    volumes:
+      - ./data/codeserver/config:/config:rw
+      - /home/${CODESERVER_DOCKER_USER}/docker:/docker:rw
+    labels:
+      - homepage.group=Coding
+      - homepage.name=Code Server
+      - homepage.icon=code-server.png
+      - homepage.href=$CODESERVER_HOMEPAGE_URL
+      - homepage.ping=$CODESERVER_HOMEPAGE_PING
+      - homepage.description=$CODESERVER_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true    

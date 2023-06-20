@@ -1,0 +1,53 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/TryGhost/Ghost
+  ghost:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: ghost:latest
+    container_name: ghost-server
+    hostname: ghost-server
+    environment:
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: root
+      database__connection__password: ${GHOST_DB_ROOT_PASSWORD}
+      database__connection__database: ghost
+      url: ${GHOST_HOMEPAGE_URL}
+    volumes:
+      - ./data/ghost/content:/var/lib/ghost/content
+    depends_on:
+      - ghost-db
+    labels:
+      - homepage.group=Blogging
+      - homepage.name=Ghost
+      - homepage.icon=ghost.png
+      - homepage.href=$GHOST_HOMEPAGE_URL
+      - homepage.ping=$GHOST_HOMEPAGE_PING
+      - homepage.description=$GHOST_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true
+
+  ghost-db:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: mysql:8.0
+    container_name: ghost-db
+    hostname: ghost-db
+    volumes:
+      - ./data/ghost/db/data:/var/lib/mysql
+      - ./data/ghost/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./data/ghost/db/sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${GHOST_DB_ROOT_PASSWORD}

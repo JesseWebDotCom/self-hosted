@@ -1,0 +1,31 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  vaultwarden:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    hostname: vaultwarden
+    ports:
+      - ${VAULTWARDEN_HTTP_PORT}:80
+    volumes:
+      - ./data/vaultwarden/data:/data
+    labels:
+      - homepage.group=Other
+      - homepage.name=Vaultwarden
+      - homepage.icon=vaultwarden-light.png
+      - homepage.href=$VAULTWARDEN_HOMEPAGE_URL
+      - homepage.ping=$VAULTWARDEN_HOMEPAGE_PING
+      - homepage.description=$VAULTWARDEN_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true 

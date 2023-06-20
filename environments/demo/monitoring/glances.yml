@@ -1,0 +1,33 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/nicolargo/glances
+  glances:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: nicolargo/glances:latest-full
+    container_name: glances
+    hostname: glances
+    environment:
+      - GLANCES_OPT=-w
+    ports:
+      - ${GLANCES_HTTP_PORT}:61208
+      - ${GLANCES_HTTPS_PORT}:61209
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Glances
+      - homepage.icon=glances.png
+      - homepage.href=$GLANCES_HOMEPAGE_URL
+      - homepage.ping=$GLANCES_HOMEPAGE_PING
+      - homepage.description=$GLANCES_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

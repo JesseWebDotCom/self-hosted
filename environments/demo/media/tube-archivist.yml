@@ -1,0 +1,84 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/tubearchivist/tubearchivist
+  tubearchivist:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    container_name: tubearchivist
+    hostname: tubearchivist    
+    image: bbilly1/tubearchivist
+    ports:
+      - ${TUBEARCHIVIST_HTTP_PORT}:8000
+    volumes:
+      - ./data/tube-archivist/media:/youtube
+      - ./data/tube-archivist/cache:/cache
+    environment:
+      - ES_URL=http://tubearchivist-es:9200     # needs protocol e.g. http and port
+      - REDIS_HOST=tubearchivist-redis          # don't add protocol
+      - HOST_UID=1000
+      - HOST_GID=1000
+      - TA_HOST=${NETWORK_HOST}      # set your host name
+      - TA_USERNAME=${TUBEARCHIVIST_ADMIN_USERNAME}           # your initial TA credentials
+      - TA_PASSWORD=${TUBEARCHIVIST_ADMIN_PASSWORD}              # your initial TA credentials
+      - ELASTIC_PASSWORD=${TUBEARCHIVIST_ELASTIC_PASSWORD}         # set password for Elasticsearch
+    depends_on:
+      - tubearchivist-es
+      - tubearchivist-redis
+    labels:
+      - homepage.group=Media
+      - homepage.name=Tube Archivist
+      - homepage.icon=tube-archivist-light.png
+      - homepage.href=$TUBEARCHIVIST_HOMEPAGE_URL
+      - homepage.ping=$TUBEARCHIVIST_HOMEPAGE_PING
+      - homepage.description=$TUBEARCHIVIST_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true
+
+  tubearchivist-redis:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: redis/redis-stack-server
+    container_name: tubearchivist-redis
+    hostname: tubearchivist-redis
+    expose:
+      - "6379"
+    volumes:
+      - ./data/tube-archivist/redis:/data
+    depends_on:
+      - tubearchivist-es
+
+  # NOTE: Create the volume directory and then run this to avoid permission issues:
+  # sudo chown 1000:0 -R environments/demo/media/data/tube-archivist/es
+  tubearchivist-es:
+    extends:
+      file: ../../common-services.yml
+      service: with_networks
+    # image: bbilly1/tubearchivist-es
+    image: elasticsearch:8.8.0 # rasoberry pi
+    container_name: tubearchivist-es
+    hostname: tubearchivist-es
+    environment:
+      - ELASTIC_PASSWORD=${TUBEARCHIVIST_ELASTIC_PASSWORD}
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=true"
+      - "discovery.type=single-node"
+      - "path.repo=/usr/share/elasticsearch/data/snapshot"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data/tube-archivist/es:/usr/share/elasticsearch/data 
+    expose:
+      - "9200"

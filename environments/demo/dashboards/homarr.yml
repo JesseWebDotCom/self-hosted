@@ -1,0 +1,33 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/ajnart/homarr
+  homarr:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks  
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    hostname: homarr
+    volumes:
+      - ./data/homarr/configs:/app/data/configs
+      - ./data/homarr/icons:/app/public/icons
+    ports:
+      - ${HOMARR_HTTP_PORT}:7575   
+    labels:
+      - homepage.group=Dashboards
+      - homepage.name=Homarr
+      - homepage.icon=homarr.png
+      - homepage.href=$HOMARR_HOMEPAGE_URL
+      - homepage.ping=$HOMARR_HOMEPAGE_PING
+      - homepage.description=$HOMARR_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

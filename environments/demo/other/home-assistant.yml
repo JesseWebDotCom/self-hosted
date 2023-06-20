@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  # https://www.home-assistant.io/installation/alternative/#docker-compose
+  homeassistant:
+    extends:
+      file: ../../common-services.yml
+      service: base
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    hostname: homeassistant     
+    volumes:
+      - ./data/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro      
+    privileged: true
+    network_mode: host
+    labels:
+      - homepage.group=Other
+      - homepage.name=Home Assistant
+      - homepage.icon=home-assistant.png
+      - homepage.href=$HOMEASSISTANT_HOMEPAGE_URL
+      - homepage.ping=$HOMEASSISTANT_HOMEPAGE_PING
+      - homepage.description=$HOMEASSISTANT_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

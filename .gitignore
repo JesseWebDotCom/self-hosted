@@ -22,6 +22,19 @@
 !/environments/.env
 !/environments/common-services.yml
 
+# DEMO ENVIRONMENT
+# ------------------------------------------------------------
+
+!/environments/demo/
+!/environments/demo/.env
+!/environments/demo/index.md
+!/environments/demo/stacks.txt
+!/environments/demo/**/
+!/environments/demo/**/*.yml
+!/environments/demo/**/*.env
+!/environments/demo/**/*.example
+/environments/demo/**/data
+
 
 # EXAMPLE ENVIRONMENT
 # ------------------------------------------------------------

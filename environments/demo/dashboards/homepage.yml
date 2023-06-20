@@ -1,0 +1,34 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/benphelps/homepage
+  homepage:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: homepage
+    hostname: homepage
+    ports:
+      - ${HOMEPAGE_HTTP_PORT}:3000
+    volumes:
+      - ./data/homepage/config:/app/config
+      - ./data/homepage/icons:/app/public/icons
+      - ./data/homepage/images:/app/public/images
+    labels:
+      - homepage.group=Dashboards
+      - homepage.name=Homepage
+      - homepage.icon=homepage.png
+      - homepage.href=$HOMEPAGE_HOMEPAGE_URL
+      - homepage.ping=$HOMEPAGE_HOMEPAGE_PING
+      - homepage.description=$HOMEPAGE_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

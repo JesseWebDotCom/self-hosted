@@ -1,0 +1,32 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/go-ORGANIZR/ORGANIZR
+  organizr:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: organizr/organizr
+    container_name: organizr
+    hostname: organizr
+    ports:
+      - ${ORGANIZR_HTTP_PORT}:80
+    volumes:
+      - ./data/organizr/config:/config:rw
+    labels:
+      - homepage.group=Dashboards
+      - homepage.name=Organizr
+      - homepage.icon=organizr.png
+      - homepage.href=$ORGANIZR_HOMEPAGE_URL
+      - homepage.ping=$ORGANIZR_HOMEPAGE_PING
+      - homepage.description=$ORGANIZR_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

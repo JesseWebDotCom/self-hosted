@@ -1,0 +1,42 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://hub.docker.com/r/adguard/adguardhome
+  adguardhome:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: adguard/adguardhome
+    container_name: adguardhome
+    hostname: adguardhome
+    volumes:
+      - ./data/adguardhome/work:/opt/adguardhome/work
+      - ./data/adguardhome/conf:/opt/adguardhome/conf
+    ports:
+      - 53:53/tcp # DNS server
+      - 53:53/udp # DNS server
+      - 3004:80 # admin
+      # - 443:443 # admin
+      - 3002:3000/tcp # setup
+      # - ${ADGUARDHOME_PORT}:3000/tcp # setup
+    labels:
+      - homepage.group=Networking
+      - homepage.name=AdGuard Home
+      - homepage.icon=/icons/adguard-home.png
+      - homepage.href=${ADGUARDHOME_HOMEPAGE_URL}
+      - homepage.ping=${ADGUARDHOME_HOMEPAGE_PING}
+      - homepage.description=${ADGUARDHOME_HOMEPAGE_DESCRIPTION}
+      - homepage.widget.type=adguard
+      - homepage.widget.url=${ADGUARDHOME_HOMEPAGE_URL}
+      - homepage.widget.username=${ADGUARDHOME_HOMEPAGE_USERNAME}
+      - homepage.widget.password=${ADGUARDHOME_HOMEPAGE_PASSWORD}
+      - homepage.hideErrors=true
+      - homepage.showStats=false

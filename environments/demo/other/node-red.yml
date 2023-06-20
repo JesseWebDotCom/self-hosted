@@ -1,0 +1,37 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/node-red/node-red
+  # https://hub.docker.com/r/nodered/node-red
+
+  # NOTE: You need to pre-create the local node-red folder and run the following before composing:
+  # sudo chown -R $USER:$USER environments/demo/other/data/node-red
+  # sudo chmod -R 777 environments/demo/other/data/node-red
+  node-red:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks  
+    image: nodered/node-red:latest
+    container_name: node-red
+    hostname: node-red
+    ports:
+      - "${NODERED_HTTP_PORT:-9090}:1880"
+    volumes:
+      - ./data/node-red/data:/data
+    labels:
+      - homepage.group=Other
+      - homepage.name=Node-RED
+      - homepage.icon=node-red.png
+      - homepage.href=$NODERED_HOMEPAGE_URL
+      - homepage.ping=$NODERED_HOMEPAGE_PING
+      - homepage.description=$NODERED_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

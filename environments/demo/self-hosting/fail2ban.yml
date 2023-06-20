@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  fail2ban:
+    extends:
+      file: ../../common-services.yml
+      service: base # cannot use init
+    image: lscr.io/linuxserver/fail2ban:latest
+    container_name: fail2ban
+    hostname: fail2ban
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    network_mode: host
+    environment:
+      - VERBOSITY=-vv #optional
+    volumes:
+      - /path/to/appdata/config:/config
+      - /var/log:/var/log:ro
+      # - /path/to/airsonic/log:/remotelogs/airsonic:ro #optional
+      # - /path/to/apache2/log:/remotelogs/apache2:ro #optional
+      # - /path/to/authelia/log:/remotelogs/authelia:ro #optional
+      # - /path/to/emby/log:/remotelogs/emby:ro #optional
+      # - /path/to/filebrowser/log:/remotelogs/filebrowser:ro #optional
+      # - /path/to/homeassistant/log:/remotelogs/homeassistant:ro #optional
+      # - /path/to/lighttpd/log:/remotelogs/lighttpd:ro #optional
+      # - /path/to/nextcloud/log:/remotelogs/nextcloud:ro #optional
+      # - /path/to/nginx/log:/remotelogs/nginx:ro #optional
+      # - /path/to/nzbget/log:/remotelogs/nzbget:ro #optional
+      # - ./../media/data/overseerr/log:/remotelogs/overseerr:ro #optional
+      # - ./../media/data/prowlarr/log:/remotelogs/prowlarr:ro #optional
+      # - ./../media/data/radarr/log:/remotelogs/radarr:ro #optional
+      # - ./../media/data/sabnzbd/log:/remotelogs/sabnzbd:ro #optional
+      # - ./../media/data/sonarr/log:/remotelogs/sonarr:ro #optional
+      # - /path/to/unificontroller/log:/remotelogs/unificontroller:ro #optional
+      # - ./../other/data/vaultwarden/data:/remotelogs/vaultwarden:ro #optional

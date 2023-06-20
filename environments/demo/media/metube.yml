@@ -1,0 +1,37 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/alexta69/metube
+  metube:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: ghcr.io/alexta69/metube
+    container_name: metube
+    hostname: metube
+    expose:
+      - "${METUBE_HTTP_PORT}"
+    environment:
+      - VIRTUAL_HOST=${METUBE_HOMEPAGE_URL}
+      - VIRTUAL_PORT=${METUBE_HTTP_PORT}
+    ports:
+      - ${METUBE_HTTP_PORT}:8081
+    volumes:
+      - ${METUBE_DOWNLOAD_DIR}:/downloads
+    labels:
+      - homepage.group=Media
+      - homepage.name=MeTube
+      - homepage.icon=metube.png
+      - homepage.href=$METUBE_HOMEPAGE_URL
+      - homepage.ping=$METUBE_HOMEPAGE_PING
+      - homepage.description=$METUBE_HOMEPAGE_DESCRIPTION
+      - homepage.hideErrors=true
+      - homepage.showStats=true

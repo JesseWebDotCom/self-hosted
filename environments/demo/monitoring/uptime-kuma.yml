@@ -1,0 +1,35 @@
+version: "3.9"
+
+networks:
+  t2_proxy:
+    name: t2_proxy
+    external: true
+  socket_proxy:
+    name: socket_proxy
+    external: true
+
+services:
+  # https://github.com/louislam/uptime-kuma
+  uptime-kuma:
+    extends:
+      file: ../../common-services.yml
+      service: init_with_networks
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    hostname: uptime-kuma
+    ports:
+      - ${UPTIME_KUMA_HTTP_PORT}:3001
+    volumes:
+      - ./data/uptime-kuma/data:/app/data
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptime-kuma.png
+      - homepage.href=$UPTIME_KUMA_HOMEPAGE_URL
+      - homepage.ping=$UPTIME_KUMA_HOMEPAGE_PING
+      - homepage.description=$UPTIME_KUMA_HOMEPAGE_DESCRIPTION
+      # - homepage.widget.type=uptimekuma
+      # - homepage.widget.url=${UPTIME_KUMA_HOMEPAGE_URL}
+      # - homepage.widget.slug=all
+      - homepage.hideErrors=true
+      - homepage.showStats=true      
