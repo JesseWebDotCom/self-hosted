@@ -1,0 +1,22 @@
+version: "3.9"
+networks:
+  default:
+    external: false
+
+services:
+  code-server:
+    extends:
+      file: ../../common-services.yml
+      service: image_base_no_init
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    hostname: code-server
+    networks:
+      - default
+    environment:
+      - SUDO_PASSWORD=${CODESERVER_SUDO_PASSWORD}
+      - DEFAULT_WORKSPACE=/config/workspace
+    volumes:
+      - ./data/code-server/config:/config
+    ports:
+      - ${CODESERVER_PORT}:8443

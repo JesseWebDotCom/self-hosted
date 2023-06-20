@@ -1,0 +1,26 @@
+services:
+  #- use when you 1) cannot use init and 2) cannot use standard networks
+  base: &base
+    image: .
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    restart: unless-stopped
+
+  #- use when you 1) can use init and 2) cannot use standard networks
+  base_init:
+    <<: *base
+    init: true
+
+  #- use when you 1) cannot use init and 2) can use standard networks
+  with_networks: &with_networks
+    <<: *base
+    networks:
+      - t2_proxy
+      - socket_proxy
+
+  #- use when you 1) can use init and 2) can use standard networks
+  init_with_networks:
+    <<: *with_networks
+    init: true

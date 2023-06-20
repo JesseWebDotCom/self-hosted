@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  # https://hub.docker.com/_/hello-world
+  hello-world:
+    extends:
+      file: ../../common-services.yml
+      service: image_base
+    image: hello-world
+    container_name: hello-world
+    hostname: hello-world

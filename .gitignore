@@ -1,0 +1,52 @@
+# ignore everything (dirs, files, sub-dirs, subfiles, etc)
+/*
+
+# root
+!.gitignore
+!.env
+!README.md
+!my_approach.md
+!requirements.txt
+!gen_pages.py
+!mkdocs.yml
+
+# docs
+!docs
+
+# tools
+!tools
+
+# environments
+!environments
+/environments/**
+!/environments/.env
+!/environments/common-services.yml
+
+
+# EXAMPLE ENVIRONMENT
+# ------------------------------------------------------------
+
+!/environments/example/
+!/environments/example/.env
+!/environments/example/index.md
+!/environments/example/stacks.txt
+
+# stacks/basics
+!/environments/example/basics/
+!/environments/example/basics/hello-world.yml
+!/environments/example/basics/whoami.yml
+
+# stacks/coding
+!/environments/example/coding/
+!/environments/example/coding/code-server.yml
+!/environments/example/coding/code-server.env
+!/environments/example/coding/code-server.secrets.example
+
+/environments/example/**/data
+
+# ------------------------------------------------------------
+
+# CATCH ALL
+/environments/**/*.secrets
+/._*
+/**/._*
